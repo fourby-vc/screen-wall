@@ -1,0 +1,74 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+// Settings shape and defaults. Pure module: no chrome.* calls, so Node can test it.
+
+import { repairSettings, SETTINGS_VERSION } from './validate.js';
+
+export { SETTINGS_VERSION };
+
+export const newId = () => Math.random().toString(36).slice(2, 10);
+
+// Every service the panel knows by name. New installs start with STARTER_IDS; the rest appear as
+// one-click "Quick add" chips under the site list. An existing user's saved list is never replaced or extended.
+export const SITE_CATALOG = [
+  { id: 'youtubetv', name: 'YouTube TV',  url: 'https://tv.youtube.com/live' },
+  { id: 'peacock',   name: 'Peacock',     url: 'https://www.peacocktv.com/' },
+  { id: 'paramount', name: 'Paramount+',  url: 'https://www.paramountplus.com/live-tv/' },
+  { id: 'prime',     name: 'Prime Video', url: 'https://www.amazon.com/gp/video/storefront' },
+  { id: 'espn',      name: 'ESPN',        url: 'https://www.espn.com/watch/' },
+  { id: 'foxone',    name: 'Fox One',     url: 'https://www.foxone.com/' },
+  { id: 'netflix',   name: 'Netflix',     url: 'https://www.netflix.com/' },
+  { id: 'hbomax',    name: 'HBO Max',     url: 'https://play.hbomax.com/' },
+  { id: 'disney',    name: 'Disney+',     url: 'https://www.disneyplus.com/' },
+  { id: 'hulu',      name: 'Hulu',        url: 'https://www.hulu.com/' },
+  { id: 'appletv',   name: 'Apple TV',    url: 'https://tv.apple.com/' },
+  { id: 'fubo',      name: 'Fubo',        url: 'https://www.fubo.tv/' },
+  { id: 'sling',     name: 'Sling TV',    url: 'https://watch.sling.com/' },
+  { id: 'dazn',      name: 'DAZN',        url: 'https://www.dazn.com/' },
+  { id: 'nflplus',   name: 'NFL+',        url: 'https://www.nfl.com/plus/' },
+  { id: 'youtube',   name: 'YouTube',     url: 'https://www.youtube.com/' },
+  { id: 'tubi',      name: 'Tubi',        url: 'https://tubitv.com/' },
+  { id: 'twitch',    name: 'Twitch',      url: 'https://www.twitch.tv/' }
+];
+
+// Where most live US sports stream, plus two general picks. Kept short so the list fits without scrolling.
+export const STARTER_IDS = ['youtubetv', 'espn', 'peacock', 'paramount', 'foxone', 'prime', 'youtube', 'netflix'];
+export const DEFAULT_SITES = STARTER_IDS.map(id => SITE_CATALOG.find(s => s.id === id));
+
+export const DEFAULT_SETTINGS = {
+  version: SETTINGS_VERSION,
+  layout: 'grid',          // see core/layouts.js
+  displayId: null,         // monitor for the wall; null = second display if present
+  gap: 0,                  // pixels between screens
+  audioFollowsFocus: true, // clicking a screen moves the sound to it
+  tidyYouTube: false,      // YouTube videos fill their screen (needs youtube.com access, asked for when turned on)
+  sites: DEFAULT_SITES,
+  views: []                // saved views: { id, name, layout, screens: {1: {url, name, siteId}}, sound }
+};
+
+const clone = v => JSON.parse(JSON.stringify(v));
+
+// Accepts nothing (first run) or stored settings and returns valid current settings.
+// Keys the extension doesn't use are dropped.
+export function normalize(raw) {
+  const d = clone(DEFAULT_SETTINGS);
+  if (!raw || typeof raw !== 'object') return d;
+  return clean(raw, d);
+}
+
+function clean(raw, d) {
+  const out = { ...d };
+  for (const k of Object.keys(d)) if (k !== 'version' && raw[k] !== undefined) out[k] = raw[k];
+  out.sites = Array.isArray(raw.sites) ? raw.sites : d.sites;
+  out.views = Array.isArray(raw.views) ? raw.views : [];
+  // Whatever is stored passes the same checks as an import; entries that fail are dropped.
+  const ok = repairSettings({ ...out, version: SETTINGS_VERSION });
+  return {
+    ...d, ...ok,
+    sites: ok.sites || d.sites,
+    views: ok.views || [],
+    version: SETTINGS_VERSION
+  };
+}

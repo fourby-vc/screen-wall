@@ -1,0 +1,75 @@
+<!doctype html>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Control panel</title>
+<link rel="icon" href="icons/32.png">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<header class="bar">
+  <div class="brand"><img src="icons/32.png" alt="" width="22" height="22"> <span id="appName"></span></div>
+  <nav class="tabs" aria-label="Pages">
+    <button data-page="wall" class="on">Wall</button>
+    <button data-page="settings">Settings</button>
+  </nav>
+  <div class="wall-only layout-picker" id="layoutPicker" role="group" aria-label="Layout"></div>
+  <select class="wall-only display-pick" id="displayPick" aria-label="Display" title="Display the wall goes on"></select>
+  <div class="spacer"></div>
+  <div class="wall-only bar-actions">
+    <div class="history">
+      <button id="back" class="ghost" title="Put back what was on the wall before"><span data-icon="undo"></span>Back</button>
+      <button id="historyBtn" class="ghost" aria-label="Recent walls" aria-haspopup="true" aria-expanded="false" title="Recent walls"><span data-icon="chevron"></span></button>
+      <div id="historyMenu" class="history-menu" hidden></div>
+    </div>
+    <div class="more">
+      <button id="moreBtn" class="ghost icon-btn" aria-label="More actions" aria-haspopup="menu" aria-expanded="false" title="More actions"><span data-icon="more"></span></button>
+      <div id="moreMenu" class="history-menu" role="menu" hidden>
+        <button id="arrange" role="menuitem" title="Put every screen back in its place in the layout"><span data-icon="snap"></span>Snap screens into the layout</button>
+        <button id="muteAll" role="menuitem"><span data-icon="mute"></span>Mute all</button>
+        <hr>
+        <button id="closeAll" role="menuitem" class="danger"><span data-icon="close"></span><span id="closeAllLabel">Close all screens</span></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="page-wall" class="page">
+
+  <div class="wall-grid">
+    <section>
+      <div class="section-head">
+        <h2>Screens</h2>
+        <div class="seg" id="screenMode" role="group" aria-label="How screens are shown">
+          <button data-mode="wall" title="See the wall in its layout. Click a screen for sound, drag to swap."><span data-icon="snap"></span>Wall</button>
+          <button data-mode="edit" title="Links, Back and Forward, recent pages and Swap for each screen"><span data-icon="edit"></span>Edit</button>
+        </div>
+      </div>
+      <div id="screens" class="screens"></div>
+    </section>
+    <aside class="side">
+      <h2 class="side-title">Sites</h2>
+      <div id="side-sites" class="side-body"></div>
+    </aside>
+  </div>
+
+  <section class="views-section">
+    <div class="section-head">
+      <h2>Saved views</h2>
+      <button id="saveWall" class="ghost"><span data-icon="plus"></span>Save wall as view</button>
+    </div>
+    <div id="views" class="views"></div>
+  </section>
+</main>
+
+<main id="page-settings" class="page" hidden></main>
+
+<dialog id="viewEditor"></dialog>
+
+<script type="module" src="dashboard.js"></script>
+</body>
+</html>

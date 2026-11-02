@@ -1,0 +1,26 @@
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Unit checks
+        run: node dev/run-tests.mjs
+      - name: Manifest is valid JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8'))"
+      - name: Source files carry the MPL-2.0 notice
+        run: |
+          missing=$(find . -path ./.git -prune -o -type f \( -name '*.js' -o -name '*.mjs' -o -name '*.css' -o -name '*.html' -o -name '*.py' -o -name '*.sh' \) -print | xargs grep -L "Mozilla Public" || true)
+          if [ -n "$missing" ]; then echo "Missing MPL-2.0 notice:"; echo "$missing"; exit 1; fi
