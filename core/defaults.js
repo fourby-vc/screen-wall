@@ -11,8 +11,9 @@ export { SETTINGS_VERSION };
 
 export const newId = () => Math.random().toString(36).slice(2, 10);
 
-// New installs start with these. An existing user's saved list is never replaced or extended.
-export const DEFAULT_SITES = [
+// Every service the panel knows by name. New installs start with STARTER_IDS; the rest appear as
+// one-click "Quick add" chips under the site list. An existing user's saved list is never replaced or extended.
+export const SITE_CATALOG = [
   { id: 'youtubetv', name: 'YouTube TV',  url: 'https://tv.youtube.com/live' },
   { id: 'peacock',   name: 'Peacock',     url: 'https://www.peacocktv.com/' },
   { id: 'paramount', name: 'Paramount+',  url: 'https://www.paramountplus.com/live-tv/' },
@@ -32,6 +33,10 @@ export const DEFAULT_SITES = [
   { id: 'tubi',      name: 'Tubi',        url: 'https://tubitv.com/' },
   { id: 'twitch',    name: 'Twitch',      url: 'https://www.twitch.tv/' }
 ];
+
+// Where most live US sports stream, plus two general picks. Kept short so the list fits without scrolling.
+export const STARTER_IDS = ['youtubetv', 'espn', 'peacock', 'paramount', 'foxone', 'prime', 'youtube', 'netflix'];
+export const DEFAULT_SITES = STARTER_IDS.map(id => SITE_CATALOG.find(s => s.id === id));
 
 export const DEFAULT_SETTINGS = {
   version: SETTINGS_VERSION,

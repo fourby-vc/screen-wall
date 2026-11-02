@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict';
 import { computeRects, slotsFor, LAYOUTS } from '../core/layouts.js';
 import { baseDomain, normalizeUrl, siteForUrl, nameFromUrl } from '../core/sites.js';
-import { migrate, DEFAULT_SETTINGS, SETTINGS_VERSION } from '../core/defaults.js';
+import { migrate, DEFAULT_SETTINGS, SETTINGS_VERSION, SITE_CATALOG, STARTER_IDS } from '../core/defaults.js';
 import { sameWall, pushSnapshot, describeSnapshot, isEmptyWall, HISTORY_MAX } from '../core/history.js';
 import { safeUrl, checkSettings, parseBackup, repairSettings, LIMITS } from '../core/validate.js';
 import { pushPage, describePage, PAGES_MAX } from '../core/pages.js';
@@ -77,12 +77,15 @@ test('first run gets defaults', () => {
   assert.notEqual(s.sites, DEFAULT_SETTINGS.sites, 'must be a copy');
 });
 
-test('default sites: unique ids, https home pages, new services included', () => {
-  const ids = DEFAULT_SETTINGS.sites.map(s => s.id);
+test('site catalog: unique ids, https home pages; starter list is a short subset of it', () => {
+  const ids = SITE_CATALOG.map(s => s.id);
   assert.equal(new Set(ids).size, ids.length);
-  for (const s of DEFAULT_SETTINGS.sites) assert.match(s.url, /^https:\/\/[^/]+\//, s.id);
+  for (const s of SITE_CATALOG) assert.match(s.url, /^https:\/\/[^/]+\//, s.id);
   for (const id of ['hbomax', 'disney', 'hulu', 'fubo', 'sling', 'dazn', 'tubi']) assert.ok(ids.includes(id), id);
-  assert.equal(siteForUrl(DEFAULT_SETTINGS.sites, 'https://play.hbomax.com/page/x').id, 'hbomax');
+  assert.equal(siteForUrl(SITE_CATALOG, 'https://play.hbomax.com/page/x').id, 'hbomax');
+  assert.deepEqual(DEFAULT_SETTINGS.sites.map(s => s.id), STARTER_IDS);
+  assert.ok(STARTER_IDS.length <= 10, 'starter list stays short');
+  for (const s of DEFAULT_SETTINGS.sites) assert.ok(s, 'every starter id is in the catalog');
 });
 
 test('v2 settings: values kept, saved site list left alone, removed features dropped', () => {

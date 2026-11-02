@@ -370,3 +370,11 @@ dialog::backdrop { background: rgba(0, 0, 0, .55); backdrop-filter: blur(2px); }
 .site button { cursor: pointer; }
 @media (max-width: 720px) { .map-status .keys { display: none; } }
 @media (prefers-reduced-motion: reduce) { .eq i { animation: none; transform: scaleY(.6); } * { transition: none !important; } }
+
+/* ---------- quick add (known services not in the list yet) ---------- */
+.quick-add { display: flex; flex-direction: column; gap: 6px; }
+.quick-add .hint { margin: 0; }
+.quick-add .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.quick-add .chip { padding: 3px 8px 3px 4px; gap: 6px; font-size: 12.5px; background: transparent; color: var(--muted); }
+.quick-add .chip:hover { color: var(--text); }
+.quick-add .chip svg.i { width: 12px; height: 12px; vertical-align: 0; }

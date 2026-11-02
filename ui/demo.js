@@ -4,8 +4,10 @@
 
 // Demo mode for store screenshots: open dashboard.html?demo
 // Fills the panel with example sites on the screens, saved views and a short history, in memory
-// only. Nothing is saved and no windows open. Your real sites are used (so favicons are real);
-// missing ones are skipped.
+// only. Nothing is saved and no windows open. Sites come from your list (so favicons are real), or from
+// the built-in catalog when you've removed them or they aren't in the starter list.
+
+import { SITE_CATALOG } from '../core/defaults.js';
 
 export const DEMO = new URLSearchParams(location.search).has('demo');
 
@@ -26,7 +28,7 @@ const HISTORY = [
 
 // Overwrites the in-memory store after every real load.
 export function applyDemo(store) {
-  const site = id => store.settings.sites.find(s => s.id === id);
+  const site = id => store.settings.sites.find(s => s.id === id) || SITE_CATALOG.find(s => s.id === id);
   store.slots = {};
   store.tabs = {};
   SCREENS.forEach((id, i) => {

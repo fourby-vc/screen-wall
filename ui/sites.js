@@ -5,7 +5,7 @@
 // Site list: favicon + name + 1–4 buttons; edit mode adds rename, delete and drag-to-reorder.
 
 import { SLOTS, $, esc, store, send, saveSettings, favicon, toast, guardTyping, DRAG } from './common.js';
-import { newId } from '../core/defaults.js';
+import { newId, SITE_CATALOG } from '../core/defaults.js';
 import { hostOf, nameFromUrl, siteForUrl } from '../core/sites.js';
 import { safeUrl, clip, LIMITS } from '../core/validate.js';
 import { icon } from './icons.js';
@@ -75,7 +75,16 @@ function draw() {
       <input name="name" type="text" maxlength="${LIMITS.name}" placeholder="Name (optional)" autocomplete="off">
       <button type="submit">Add</button>
     </form>
+    ${quickAdd(sites)}
     ${sites.length > 15 ? '<p class="hint">Tip: 10–15 sites keeps the list quick to scan.</p>' : ''}`;
+}
+
+// Known services that aren't in the list yet (matched by id or by address), as one-click chips.
+function quickAdd(sites) {
+  const missing = SITE_CATALOG.filter(c => !sites.some(s => s.id === c.id) && !siteForUrl(sites, c.url));
+  if (!missing.length) return '';
+  return `<div class="quick-add"><span class="hint">Quick add</span><div class="chips">${missing.map(c =>
+    `<button type="button" class="chip" data-a="quick" data-id="${esc(c.id)}" title="Add ${esc(c.name)} (${esc(hostOf(c.url))})">${favicon(c.url, c.name, 16)}${esc(c.name)}${icon('plus')}</button>`).join('')}</div></div>`;
 }
 
 function row(site) {
@@ -114,6 +123,13 @@ async function onClick(e) {
   const site = store.settings.sites.find(s => s.id === id);
   switch (el.dataset.a) {
     case 'toggle-edit': editing = !editing; editId = null; return draw();
+    case 'quick': {
+      const c = SITE_CATALOG.find(x => x.id === el.dataset.id);
+      if (!c) return;
+      const list = store.settings.sites;
+      if (list.length >= LIMITS.sites) return toast(`The list holds up to ${LIMITS.sites} sites.`);
+      return saveSettings({ sites: [...list, { ...c, id: list.some(s => s.id === c.id) ? newId() : c.id }] });
+    }
     case 'edit':   editId = id; draw(); return $('input[name=name]', root)?.focus();
     case 'cancel': editId = null; return draw();
     case 'delete':
