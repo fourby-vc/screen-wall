@@ -1,0 +1,62 @@
+<!doctype html>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Control panel</title>
+<link rel="icon" href="icons/32.png">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<header class="bar">
+  <div class="brand"><img src="icons/32.png" alt="" width="20" height="20"> <span id="appName"></span></div>
+  <nav class="tabs" aria-label="Pages">
+    <button data-page="wall" class="on">Wall</button>
+    <button data-page="settings">Settings</button>
+  </nav>
+  <div class="wall-only layout-picker" id="layoutPicker" role="group" aria-label="Layout"></div>
+  <select class="wall-only display-pick" id="displayPick" aria-label="Display" title="Display the wall goes on"></select>
+  <div class="spacer"></div>
+  <div class="wall-only bar-actions">
+    <div class="history">
+      <button id="back" class="ghost" title="Put back what was on the wall before">← Back</button>
+      <button id="historyBtn" class="ghost" aria-label="Recent walls" aria-haspopup="true" aria-expanded="false" title="Recent walls">▾</button>
+      <div id="historyMenu" class="history-menu" hidden></div>
+    </div>
+    <button id="arrange" class="ghost" title="Snap every screen back into the layout">Snap</button>
+    <button id="muteAll" class="ghost">Mute all</button>
+    <button id="closeAll" class="ghost danger">Close all</button>
+  </div>
+</header>
+
+<main id="page-wall" class="page">
+  <section class="views-section">
+    <div class="section-head">
+      <h2>Saved views</h2>
+      <button id="saveWall" class="ghost">Save wall as view</button>
+    </div>
+    <div id="views" class="views"></div>
+  </section>
+
+  <div class="wall-grid">
+    <section>
+      <div class="section-head"><h2>Screens</h2></div>
+      <div id="screens" class="screens"></div>
+    </section>
+    <aside class="side">
+      <h2 class="side-title">Sites</h2>
+      <div id="side-sites" class="side-body"></div>
+    </aside>
+  </div>
+</main>
+
+<main id="page-settings" class="page" hidden></main>
+
+<dialog id="viewEditor"></dialog>
+
+<script type="module" src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "appName": {
+    "message": "Screen Wall",
+    "description": "Product name. Change it here only; the panel and backups read it from this file."
+  },
+  "appDescription": {
+    "message": "Watch up to four sites at once as a frameless grid, with one-click saved views, sound switching and a Back button for the wall."
+  },
+  "actionTitle": {
+    "message": "Click for the control panel, right-click for saved views"
+  }
+}

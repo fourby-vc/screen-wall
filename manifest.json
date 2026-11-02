@@ -1,0 +1,79 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_appName__",
+  "version": "1.0.0",
+  "description": "__MSG_appDescription__",
+  "default_locale": "en",
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "system.display",
+    "favicon",
+    "contextMenus",
+    "scripting"
+  ],
+  "optional_host_permissions": [
+    "https://www.youtube.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'"
+  },
+  "action": {
+    "default_title": "__MSG_actionTitle__",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png"
+    }
+  },
+  "commands": {
+    "open-panel": {
+      "suggested_key": {
+        "default": "Alt+Shift+D"
+      },
+      "description": "Open the control panel"
+    },
+    "cycle-audio": {
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      },
+      "description": "Move sound to the next screen"
+    },
+    "view-1": {
+      "suggested_key": {
+        "default": "Alt+Shift+1"
+      },
+      "description": "Open saved view 1"
+    },
+    "view-2": {
+      "description": "Open saved view 2"
+    },
+    "view-3": {
+      "description": "Open saved view 3"
+    },
+    "rearrange": {
+      "description": "Snap every screen back into the layout"
+    },
+    "audio-1": {
+      "description": "Sound on screen 1"
+    },
+    "audio-2": {
+      "description": "Sound on screen 2"
+    },
+    "audio-3": {
+      "description": "Sound on screen 3"
+    },
+    "audio-4": {
+      "description": "Sound on screen 4"
+    }
+  }
+}
