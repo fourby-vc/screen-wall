@@ -9,6 +9,7 @@ import { LAYOUTS, slotsFor } from '../core/layouts.js';
 import { newId } from '../core/defaults.js';
 import { normalizeUrl, siteForUrl, nameFromUrl } from '../core/sites.js';
 import { safeUrl, clip, LIMITS } from '../core/validate.js';
+import { icon } from './icons.js';
 
 let root, dialog, draft = null;
 
@@ -35,19 +36,19 @@ function draw() {
       <button class="view-open" data-a="launch" title="Open this view">
         ${layoutIcon(v.layout, n => {
           const scr = v.screens?.[n];
-          return (scr?.url ? favicon(scr.url, scr.name, 18) : '') + (v.sound === n && scr?.url ? '<i class="spk">🔊</i>' : '');
+          return (scr?.url ? favicon(scr.url, scr.name, 18) : '') + (v.sound === n && scr?.url ? `<i class="spk" title="Sound">${icon('sound')}</i>` : '');
         }, 'big')}
         <span class="view-name">${esc(v.name)}</span>
         <span class="view-meta">${count} screen${count === 1 ? '' : 's'}${key ? ` · <kbd>${esc(key)}</kbd>` : ''}</span>
       </button>
       <div class="view-tools">
-        <button data-a="edit" class="icon-btn" title="Edit">✎</button>
-        <button data-a="dup" class="icon-btn" title="Duplicate">⧉</button>
-        <button data-a="del" class="icon-btn danger" title="Delete">✕</button>
+        <button data-a="edit" class="icon-btn" title="Edit" aria-label="Edit view">${icon('edit')}</button>
+        <button data-a="dup" class="icon-btn" title="Duplicate" aria-label="Duplicate view">${icon('copy')}</button>
+        <button data-a="del" class="icon-btn danger" title="Delete" aria-label="Delete view">${icon('close')}</button>
       </div>
     </div>`;
   }).join('') + `
-    <button class="view-card add" data-a="new"><span class="plus">＋</span><span>New view</span></button>
+    <button class="view-card add" data-a="new"><span class="plus">${icon('plus')}</span><span>New view</span></button>
     ${views.length ? '' : `<p class="hint views-empty">Set up the wall the way you like it, then <b>Save wall as view</b>. Next time, one click opens every screen, the layout and the sound. Views also appear when you right-click the toolbar icon${shortcutFor('view-1') ? `, and ${esc(shortcutFor('view-1'))} opens the first one` : ''}.</p>`}`;
 }
 
@@ -127,7 +128,7 @@ function drawEditor() {
               <option value="__custom"${value === '__custom' ? ' selected' : ''}>Other link…</option>
             </select>
             <input data-f="url" type="text" maxlength="${LIMITS.url}" placeholder="Paste a link" value="${esc(isCustom ? scr.url : '')}" ${isCustom ? '' : 'hidden'}>
-            <label class="radio" title="This screen gets the sound"><input type="radio" name="sound" value="${n}"${draft.sound === n ? ' checked' : ''}> 🔊</label>
+            <label class="radio" title="This screen gets the sound"><input type="radio" name="sound" value="${n}"${draft.sound === n ? ' checked' : ''}> ${icon('sound')}</label>
           </div>`;
         }).join('')}
       </div>

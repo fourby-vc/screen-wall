@@ -3,7 +3,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-"""Draws the toolbar/store icons (a 2×2 grid of screens) into icons/. No dependencies.
+"""Draws the toolbar/store icons (a 2×2 grid of screens, the one with sound lit) into icons/. No dependencies.
 
     python3 dev/make-icons.py
 """
@@ -12,9 +12,9 @@ import struct
 import zlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BG = (11, 15, 20)
-TILE = (61, 220, 132)
-TILE_DIM = (36, 120, 78)
+BG = (16, 19, 24)
+TILE = (245, 184, 61)     # amber: the screen with sound
+TILE_DIM = (78, 86, 101)  # neutral: the other screens
 
 
 def rounded(x, y, x0, y0, x1, y1, r):

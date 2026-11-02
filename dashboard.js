@@ -14,13 +14,16 @@ import { mountScreens } from './ui/screens.js';
 import { mountSites } from './ui/sites.js';
 import { mountViews, saveWallAsView } from './ui/views.js';
 import { mountSettings } from './ui/settings.js';
+import { icon } from './ui/icons.js';
+import { tidyTip } from './ui/tips.js';
 
-const renderScreens = mountScreens($('#screens'));
+const renderScreens = mountScreens($('#screens'), $('#screenMode'));
 const renderSites = mountSites($('#side-sites'));
 const renderViews = mountViews($('#views'), $('#viewEditor'));
 const renderSettings = mountSettings($('#page-settings'));
 
 $('#appName').textContent = APP_NAME;
+document.querySelectorAll('[data-icon]').forEach(el => { el.outerHTML = icon(el.dataset.icon); });
 document.title = APP_NAME;
 
 const PAGES = ['wall', 'settings'];
@@ -76,6 +79,7 @@ function renderAll() {
   renderScreens();
   renderSites();
   if (page === 'settings') renderSettings();
+  tidyTip();
 }
 subscribe(renderAll);
 
@@ -110,13 +114,40 @@ $('#historyMenu').addEventListener('click', e => {
 });
 document.addEventListener('click', e => {
   if (menuOpen && !e.target.closest('.history')) { menuOpen = false; renderHistory(); }
+  if (moreOpen && !e.target.closest('.more')) setMore(false);
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && menuOpen) { menuOpen = false; renderHistory(); $('#historyBtn').focus(); }
+  if (e.key === 'Escape' && moreOpen) { setMore(false); $('#moreBtn').focus(); }
 });
-$('#arrange').addEventListener('click', () => send({ cmd: 'arrange' }));
-$('#muteAll').addEventListener('click', () => send({ cmd: 'muteAll' }));
-$('#closeAll').addEventListener('click', () => { if (confirm('Close every screen?')) send({ cmd: 'closeAll' }); });
+
+// ⋯ menu: Snap, Mute all, Close all. Close all needs a second click, so one slip can't clear the wall.
+let moreOpen = false, confirmClose = false;
+function setMore(open) {
+  moreOpen = open;
+  confirmClose = false;
+  $('#moreMenu').hidden = !open;
+  $('#moreBtn').setAttribute('aria-expanded', String(open));
+  $('#closeAll').classList.remove('confirm');
+  const count = Object.keys(store.slots).length;
+  $('#closeAll').disabled = !count;
+  $('#closeAllLabel').textContent = 'Close all screens';
+  if (open) $('#moreMenu button:not(:disabled)')?.focus();
+}
+$('#moreBtn').addEventListener('click', () => setMore(!moreOpen));
+$('#arrange').addEventListener('click', () => { setMore(false); send({ cmd: 'arrange' }); });
+$('#muteAll').addEventListener('click', () => { setMore(false); send({ cmd: 'muteAll' }); });
+$('#closeAll').addEventListener('click', () => {
+  if (!confirmClose) {
+    const count = Object.keys(store.slots).length;
+    confirmClose = true;
+    $('#closeAll').classList.add('confirm');
+    $('#closeAllLabel').textContent = `Click again to close ${count} screen${count === 1 ? '' : 's'}`;
+    return;
+  }
+  setMore(false);
+  send({ cmd: 'closeAll' });
+});
 $('#saveWall').addEventListener('click', saveWallAsView);
 
 // ---------- live updates ----------

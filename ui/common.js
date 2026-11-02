@@ -71,7 +71,7 @@ export function faviconUrl(pageUrl, size = 32) {
   return u.href;
 }
 
-const hue = s => [...String(s)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
+export const hue = s => [...String(s)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
 
 export function favicon(pageUrl, name = '', size = 20) {
   const letter = String(name || '?').trim().charAt(0).toUpperCase() || '?';
@@ -97,14 +97,29 @@ export function layoutIcon(layoutId, tile = () => '', cls = '') {
     `<span class="tile" style="left:${x * 100}%;top:${y * 100}%;width:${w * 100}%;height:${h * 100}%">${tile(Number(n))}</span>`).join('')}</span>`;
 }
 
+// Drag-and-drop payload types: a site from the list, or a screen from the wall.
+export const DRAG = { site: 'application/x-screen-wall-site', slot: 'application/x-screen-wall-slot' };
+
+// A short message at the bottom of the page. actions: [{ label, run }] adds buttons and keeps it up longer.
+// run() is called inside the click, so it may ask Chrome for a permission.
 let toastTimer;
-export function toast(text) {
+export function toast(text, actions = []) {
   let el = $('#toast');
-  if (!el) { el = document.createElement('div'); el.id = 'toast'; document.body.appendChild(el); }
-  el.textContent = text;
+  if (!el) { el = document.createElement('div'); el.id = 'toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+  const msg = document.createElement('span');
+  msg.textContent = text;
+  el.replaceChildren(msg);
+  for (const a of actions) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = a.label;
+    b.addEventListener('click', () => { el.classList.remove('show'); a.run(); });
+    el.append(b);
+  }
+  el.classList.toggle('has-actions', actions.length > 0);
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+  toastTimer = setTimeout(() => el.classList.remove('show'), actions.length ? 12000 : 3500);
 }
 
 export const pref = {

@@ -3,7 +3,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-# Builds the upload-ready zip for the Chrome Web Store. Leaves out dev/, the README, SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md and dotfiles.
+# Builds the upload-ready zip for the Chrome Web Store. Leaves out dev/, the README, CHANGELOG, SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md and dotfiles.
 #
 #   sh dev/package.sh
 #
@@ -15,7 +15,7 @@ SLUG=$(python3 -c "import json,re; n=json.load(open('_locales/en/messages.json')
 
 STAGE=$(mktemp -d)
 trap 'rm -rf "$STAGE"' EXIT
-rsync -a --exclude 'dev/' --exclude 'README.md' --exclude 'SECURITY.md' --exclude 'CONTRIBUTING.md' --exclude 'CODE_OF_CONDUCT.md' --exclude '*.zip' --exclude '__pycache__/' --exclude '.*' ./ "$STAGE/"
+rsync -a --exclude 'dev/' --exclude 'README.md' --exclude 'CHANGELOG.md' --exclude 'SECURITY.md' --exclude 'CONTRIBUTING.md' --exclude 'CODE_OF_CONDUCT.md' --exclude '*.zip' --exclude '__pycache__/' --exclude '.*' ./ "$STAGE/"
 
 OUT="$(cd .. && pwd)/$SLUG-$VERSION-store.zip"
 rm -f "$OUT"

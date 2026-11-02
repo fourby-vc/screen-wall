@@ -4,10 +4,11 @@
 
 // Site list: favicon + name + 1–4 buttons; edit mode adds rename, delete and drag-to-reorder.
 
-import { SLOTS, $, esc, store, send, saveSettings, favicon, toast, guardTyping } from './common.js';
+import { SLOTS, $, esc, store, send, saveSettings, favicon, toast, guardTyping, DRAG } from './common.js';
 import { newId } from '../core/defaults.js';
 import { hostOf, nameFromUrl, siteForUrl } from '../core/sites.js';
 import { safeUrl, clip, LIMITS } from '../core/validate.js';
+import { icon } from './icons.js';
 
 let root, editing = false, editId = null, dragId = null;
 
@@ -18,7 +19,13 @@ export function mountSites(el) {
   root.addEventListener('submit', onSubmit);
   root.addEventListener('dragstart', e => {
     const li = e.target.closest('.site');
-    if (!li || !editing) return;
+    if (!li) return;
+    if (!editing) { // drag a site onto a screen (screens.js handles the drop)
+      e.dataTransfer.setData(DRAG.site, li.dataset.id);
+      e.dataTransfer.effectAllowed = 'copy';
+      li.classList.add('dragging');
+      return;
+    }
     dragId = li.dataset.id;
     li.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
@@ -57,7 +64,7 @@ function draw() {
   const sites = store.settings.sites;
   root.innerHTML = `
     <div class="panel-head">
-      <span class="hint">${editing ? 'Drag to reorder. Changes save as you go.' : 'Click a number to open that site on a screen.'}</span>
+      <span class="hint">${editing ? 'Drag to reorder. Changes save as you go.' : 'Click numbers to put a site on those screens, or drag it onto the wall.'}</span>
       <button data-a="toggle-edit" class="${editing ? 'on' : 'ghost'}">${editing ? 'Done' : 'Edit list'}</button>
     </div>
     <ul class="sites">
@@ -74,13 +81,13 @@ function draw() {
 function row(site) {
   const showing = screensShowing(site);
   return `
-  <li class="site" data-id="${esc(site.id)}" draggable="${editing}">
-    ${editing ? '<span class="handle" title="Drag to reorder">⋮⋮</span>' : ''}
+  <li class="site" data-id="${esc(site.id)}" draggable="true"${editing ? '' : ' title="Drag onto a screen, or use the numbers"'}>
+    ${editing ? `<span class="handle" title="Drag to reorder">${icon('grip')}</span>` : ''}
     ${favicon(site.url, site.name, 22)}
     <div class="site-name"><b>${esc(site.name)}</b><small>${esc(hostOf(site.url))}</small></div>
     ${editing ? `
-      <button data-a="edit" class="icon-btn" title="Edit">✎</button>
-      <button data-a="delete" class="icon-btn danger" title="Delete">✕</button>`
+      <button data-a="edit" class="icon-btn" title="Edit" aria-label="Edit ${esc(site.name)}">${icon('edit')}</button>
+      <button data-a="delete" class="icon-btn danger" title="Delete" aria-label="Delete ${esc(site.name)}">${icon('close')}</button>`
     : `<div class="send">${SLOTS.map(n => {
         const cls = showing.includes(n) ? 'current' : store.slots[n] ? '' : 'free';
         return `<button data-a="open" data-slot="${n}" class="${cls}" title="Open ${esc(site.name)} on screen ${n}">${n}</button>`;
