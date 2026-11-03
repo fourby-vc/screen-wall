@@ -99,6 +99,12 @@ The server prints the address of a local preview (port 8765 unless you pass anot
 
 **Screenshots:** open the panel with `?demo` on the end of its address (for example `chrome-extension://<id>/dashboard.html?demo`). That puts example sites on all four screens, four saved views and two history entries, using your real site icons. Nothing opens or saves in demo mode.
 
+**Live web demo:** builds the panel, the mocked `chrome.*` APIs and four example screens into a static site in `dist/demo/`, with a "Live demo" banner on top. `.github/workflows/demo.yml` publishes it to GitHub Pages on every push to `main` (turn on *Settings → Pages → Source: GitHub Actions* once; set a `STORE_URL` repository variable to show an **Add to Chrome** button).
+
+```bash
+python3 dev/build-demo.py
+```
+
 **Package for the Chrome Web Store** (leaves out `dev/`, this README and the other contributor docs):
 
 ```bash
