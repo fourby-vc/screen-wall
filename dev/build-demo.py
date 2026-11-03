@@ -64,6 +64,7 @@ def main():
     write("demo/seed.js", read("dev/demo-seed.js"))  # same ../core/ path works from demo/
     write("demo/display.js", read("dev/demo-display.js"))
     write("demo/display.css", read("dev/demo-display.css"))
+    shutil.copy2(os.path.join(ROOT, "dev/demo-assets/fourby.png"), os.path.join(OUT, "demo/fourby.png"))  # the fourby character
 
     store = link(STORE_URL, "Add to Chrome", primary=True) or '<span class="demo-soon">Coming to the Chrome Web Store</span>'
     banner = f"""<style>
@@ -71,12 +72,14 @@ def main():
 .demo-banner p{{margin:0;flex:1 1 320px;min-width:0}}
 .demo-banner b{{font-weight:700}}
 .demo-banner .demo-links{{display:flex;gap:8px;flex-wrap:wrap}}
+.demo-mascot{{flex:none;width:48px;height:48px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #1f1400}}
 .demo-btn{{color:#1f1400;text-decoration:none;font-weight:600;padding:5px 12px;border-radius:6px;border:1px solid rgba(31,20,0,.35);white-space:nowrap}}
 .demo-btn.primary{{background:#1f1400;color:#fff;border-color:#1f1400}}
 .demo-btn:focus-visible{{outline:2px solid #1f1400;outline-offset:2px}}
 .demo-soon{{font-weight:600;white-space:nowrap}}
 </style>
 <div class="demo-banner" role="note">
+  <img class="demo-mascot" src="demo/fourby.png" alt="" width="48" height="48">
   <p><b>Live demo.</b> The pretend projector shows what {html.escape(name)} does to your display; below it is the real control panel. Click a site's <b>1&nbsp;2&nbsp;3&nbsp;4</b>, click a screen to move the sound, drag one screen onto another, or try a saved view. In Chrome it places real windows on your display.</p>
   <div class="demo-links">{store}{link(REPO_URL, "Code on GitHub")}</div>
 </div>
@@ -87,6 +90,7 @@ def main():
     page = page.replace("<title>Control panel</title>", f"<title>{html.escape(name)}: live demo</title>")
     page = page.replace("<head>", f'<head>\n<meta http-equiv="Content-Security-Policy" content="{CSP}">', 1)
     page = page.replace("</head>", '<link rel="stylesheet" href="demo/display.css">\n</head>', 1)
+    page = page.replace('<link rel="icon" href="icons/32.png">', '<link rel="icon" href="demo/fourby.png">', 1)
     page = page.replace("<body>", "<body>\n" + banner, 1)
     page = page.replace(HOOK, '<script src="demo/mock-chrome.js"></script>\n'
                               '<script type="module" src="background.js"></script>\n'
