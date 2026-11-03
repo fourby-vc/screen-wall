@@ -48,7 +48,7 @@ wrap.innerHTML = `
     <button type="button" class="pretend-sound" aria-pressed="false">Turn sound on</button>
   </div>
   <div class="pretend-screen"><div class="pretend-empty">No screens open. Click a site's <b>1&nbsp;2&nbsp;3&nbsp;4</b> in the panel below.</div></div>
-  <p class="pretend-note">Click a screen here or in the panel to move the sound. Films: Blender Studio open movies (CC BY), played from YouTube. Streaming services play only in your own Chrome windows, signed in as you.</p>`;
+  <p class="pretend-note">Click a screen here or in the panel to move the sound. Videos play from YouTube. Streaming services play only in your own Chrome windows, signed in as you.</p>`;
 (document.querySelector('.demo-banner') || document.body.firstElementChild).after(wrap);
 const screenEl = wrap.querySelector('.pretend-screen');
 const emptyEl = wrap.querySelector('.pretend-empty');

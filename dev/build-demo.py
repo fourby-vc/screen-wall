@@ -9,8 +9,8 @@
     STORE_URL=https://... python3 dev/build-demo.py
 
 Copies the extension, adds dev/mock-chrome.js (a stand-in for Chrome's APIs), dev/demo-seed.js
-(four films on screen and some saved views) and dev/demo-display.js (a pretend projector that plays
-them where the windows would go), and puts a "Live demo" banner on top. Nothing here ships in the extension.
+(four demo videos on screen and some saved views) and dev/demo-display.js (a pretend projector that
+plays them where the windows would go), and puts a "Live demo" banner on top. Nothing here ships in the extension.
 
 Links in the banner: STORE_URL (Chrome Web Store listing; left out while empty) and REPO_URL (the
 GitHub repo; on GitHub Actions it is filled in automatically).
