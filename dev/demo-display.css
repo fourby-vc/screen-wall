@@ -1,0 +1,27 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+/* The web demo's pretend projector (dev/demo-display.js). Not shipped in the extension. */
+.pretend { max-width: 980px; margin: 16px auto 4px; padding: 0 16px; font: 13px/1.45 system-ui, sans-serif; }
+.pretend-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.pretend-label { font-weight: 600; font-size: 14px; }
+.pretend-label em { font-style: normal; font-weight: 400; opacity: .65; }
+.pretend-sound { font: inherit; font-weight: 600; padding: 5px 12px; border-radius: 6px; border: 1px solid #e8a317; background: transparent; color: inherit; cursor: pointer; }
+.pretend-sound[aria-pressed="true"] { background: #e8a317; color: #1f1400; }
+.pretend-screen { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #07080a; border: 10px solid #1b1e23; border-radius: 10px; overflow: hidden; }
+.pretend-empty { position: absolute; inset: 0; display: grid; place-items: center; color: #9aa3b0; text-align: center; padding: 16px; }
+.pretend-win { position: absolute; display: flex; flex-direction: column; background: #111; box-shadow: inset 0 0 0 1px #2a2e35; transition: left .25s, top .25s, width .25s, height .25s; }
+.pretend-bar { flex: none; height: 16px; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 6px; background: #22262c; color: #c8ced6; font-size: 10px; white-space: nowrap; overflow: hidden; }
+.pretend-name { overflow: hidden; text-overflow: ellipsis; }
+.pretend-badge { display: none; background: #e8a317; color: #1f1400; font-weight: 700; padding: 0 5px; border-radius: 3px; }
+.pretend-win.has-sound { box-shadow: inset 0 0 0 2px #e8a317; z-index: 1; }
+.pretend-win.has-sound .pretend-badge { display: inline; }
+.pretend-body { position: relative; flex: 1; min-height: 0; }
+.pretend-body iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; }
+.pretend-off { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px; text-align: center; color: #9aa3b0; font-size: 11px; background: repeating-linear-gradient(135deg, #15181c 0 10px, #181b20 10px 20px); }
+.pretend-off b { color: #e8ebef; font-size: 13px; }
+.pretend-hit { position: absolute; inset: 16px 0 0; background: transparent; border: 0; cursor: pointer; }
+.pretend-hit:focus-visible { outline: 2px solid #e8a317; outline-offset: -2px; }
+.pretend-note { margin: 8px 0 0; opacity: .7; font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { .pretend-win { transition: none; } }

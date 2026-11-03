@@ -8,9 +8,9 @@
     python3 dev/build-demo.py                 # writes dist/demo/
     STORE_URL=https://... python3 dev/build-demo.py
 
-Copies the extension, adds dev/mock-chrome.js (a stand-in for Chrome's APIs) and dev/demo-seed.js
-(four example screens and some saved views), and puts a "Live demo" banner on top. No windows open;
-the panel's Wall view shows what would happen. Nothing here ships in the extension.
+Copies the extension, adds dev/mock-chrome.js (a stand-in for Chrome's APIs), dev/demo-seed.js
+(four films on screen and some saved views) and dev/demo-display.js (a pretend projector that plays
+them where the windows would go), and puts a "Live demo" banner on top. Nothing here ships in the extension.
 
 Links in the banner: STORE_URL (Chrome Web Store listing; left out while empty) and REPO_URL (the
 GitHub repo; on GitHub Actions it is filled in automatically).
@@ -62,6 +62,8 @@ def main():
     # The mock reports a fixed version; show the real one in Settings → About.
     write("demo/mock-chrome.js", read("dev/mock-chrome.js").replace("version: '1.0.0'", f"version: '{version}'"))
     write("demo/seed.js", read("dev/demo-seed.js"))  # same ../core/ path works from demo/
+    write("demo/display.js", read("dev/demo-display.js"))
+    write("demo/display.css", read("dev/demo-display.css"))
 
     store = link(STORE_URL, "Add to Chrome", primary=True) or '<span class="demo-soon">Coming to the Chrome Web Store</span>'
     banner = f"""<style>
@@ -75,7 +77,7 @@ def main():
 .demo-soon{{font-weight:600;white-space:nowrap}}
 </style>
 <div class="demo-banner" role="note">
-  <p><b>Live demo.</b> This is the real {html.escape(name)} control panel, running on example screens in your browser. Click a site's <b>1&nbsp;2&nbsp;3&nbsp;4</b>, click a screen to move the sound, or drag one screen onto another. In Chrome it places real windows on your display.</p>
+  <p><b>Live demo.</b> The pretend projector shows what {html.escape(name)} does to your display; below it is the real control panel. Click a site's <b>1&nbsp;2&nbsp;3&nbsp;4</b>, click a screen to move the sound, drag one screen onto another, or try a saved view. In Chrome it places real windows on your display.</p>
   <div class="demo-links">{store}{link(REPO_URL, "Code on GitHub")}</div>
 </div>
 """
@@ -84,10 +86,12 @@ def main():
         raise SystemExit("dashboard.html changed: update dev/build-demo.py")
     page = page.replace("<title>Control panel</title>", f"<title>{html.escape(name)}: live demo</title>")
     page = page.replace("<head>", f'<head>\n<meta http-equiv="Content-Security-Policy" content="{CSP}">', 1)
+    page = page.replace("</head>", '<link rel="stylesheet" href="demo/display.css">\n</head>', 1)
     page = page.replace("<body>", "<body>\n" + banner, 1)
     page = page.replace(HOOK, '<script src="demo/mock-chrome.js"></script>\n'
                               '<script type="module" src="background.js"></script>\n'
-                              '<script type="module" src="demo/seed.js"></script>\n' + HOOK)
+                              '<script type="module" src="demo/seed.js"></script>\n'
+                              '<script type="module" src="demo/display.js"></script>\n' + HOOK)
     write("index.html", page)
     write("dashboard.html", page)
     write(".nojekyll", "")  # GitHub Pages: serve folders starting with "_" (the _locales folder) as-is
