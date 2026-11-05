@@ -57,8 +57,19 @@ export function mountSites(el) {
 // Which screen is currently showing a given site.
 const screensShowing = site => SLOTS.filter(n => {
   const url = store.tabs[n]?.url || store.slots[n]?.url;
-  return store.slots[n] && (siteForUrl(store.settings.sites, url)?.id ?? store.slots[n].siteId) === site.id;
+  return store.slots[n] && siteIdOnScreen(n, url) === site.id;
 });
+
+// Several sites can share a host (e.g. a few YouTube videos), so an exact link wins, then the site the
+// screen was opened with while the page is still on its host, then the first site on that host.
+function siteIdOnScreen(n, url) {
+  const sites = store.settings.sites;
+  const exact = sites.find(s => s.url === url);
+  if (exact) return exact.id;
+  const own = sites.find(s => s.id === store.slots[n].siteId);
+  if (own && hostOf(own.url) === hostOf(url)) return own.id;
+  return siteForUrl(sites, url)?.id ?? store.slots[n].siteId;
+}
 
 function draw() {
   const sites = store.settings.sites;
