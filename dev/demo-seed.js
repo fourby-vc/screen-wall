@@ -12,10 +12,10 @@ import { DEFAULT_SITES } from '../core/defaults.js';
 
 const yt = id => `https://www.youtube.com/watch?v=${id}`;
 const VIDEOS = [
-  { id: 'demo-1', name: 'Demo 1', url: yt('Jg_i7zbobxk') },
-  { id: 'demo-2', name: 'Demo 2', url: yt('WQiHl3d4tgg') },
-  { id: 'demo-3', name: 'Demo 3', url: yt('hvPOUgkrz9I') },
-  { id: 'demo-4', name: 'Demo 4', url: yt('3aXHAaoLIns') }
+  { id: 'demo-1', name: 'Demo 1', url: yt('ZaCXDhj2owA') },
+  { id: 'demo-2', name: 'Demo 2', url: yt('jjIuWBB1Dlo') },
+  { id: 'demo-3', name: 'Demo 3', url: yt('H3gg79wLHHw') },
+  { id: 'demo-4', name: 'Demo 4', url: yt('K2tACyNhdKQ') }
 ];
 const SITES = [...VIDEOS, ...DEFAULT_SITES];
 
